@@ -1,65 +1,57 @@
-import React, { Component } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { nanoid } from 'nanoid';
 
-export class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
-  nameInputId = nanoid();
-  telInputId = nanoid();
+export const ContactForm = ({ onAddContact }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
-  inputHandler = event => {
+  const handleChange = event => {
     const { name, value } = event.target;
-    this.setState({ [name]: value });
+    if (name === 'name') {
+      setName(value);
+    } else if (name === 'number') {
+      setNumber(value);
+    }
   };
 
-  onSubmitHandler = event => {
+  const handleSubmit = event => {
     event.preventDefault();
-    const form = event.target;
-    const { name, number } = this.state;
-    this.props.onSubmit({
-      name: name.trim(),
-      number: number.trim(),
-      form: form.reset(),
-    });
-    this.setState({ name: '', number: '' });
+    const id = nanoid();
+    const newContact = { id, name, number };
+    onAddContact(newContact);
+    setName('');
+    setNumber('');
   };
 
-  render() {
-    const { name, number } = this.state;
-    return (
-      <form onSubmit={this.onSubmitHandler}>
-        <Label htmlFor={this.nameInputId && this.telInputId}>
-          Name
-          <input
-            id={this.nameInputId}
-            placeholder="Enter name"
-            type="text"
-            name="name"
-            value={name}
-            onChange={this.inputHandler}
-            required
-          />
-          Number
-          <input
-            id={this.telInputId}
-            placeholder="Enter phone number"
-            type="tel"
-            name="number"
-            value={number}
-            onChange={this.inputHandler}
-            required
-          />
-          <Button type="submit" disabled={!(name && number)}>
-            Add contact
-          </Button>
-        </Label>
-      </form>
-    );
-  }
-}
+  return (
+    <form onSubmit={handleSubmit}>
+      <Label>
+        Name
+        <input
+          placeholder="Enter name"
+          type="text"
+          name="name"
+          value={name}
+          onChange={handleChange}
+          required
+        />
+        Number
+        <input
+          placeholder="Enter phone number"
+          type="tel"
+          name="number"
+          value={number}
+          onChange={handleChange}
+          required
+        />
+        <Button type="submit" disabled={!(name && number)}>
+          Add contact
+        </Button>
+      </Label>
+    </form>
+  );
+};
 
 const Label = styled.label`
   display: flex;

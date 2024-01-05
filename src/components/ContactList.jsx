@@ -1,12 +1,12 @@
 import { styled } from 'styled-components';
 
-export const ContactList = ({ contacts, onClick }) => {
+export const ContactList = ({ contacts, onDeleteContact }) => {
   return (
     <List>
       {contacts.map(contact => (
         <Item key={contact.id}>
           {contact.name}: {contact.number}
-          <Buton onClick={() => onClick(contact.id)} type="button">
+          <Buton onClick={() => onDeleteContact(contact.id)} type="button">
             Delete
           </Buton>
         </Item>
